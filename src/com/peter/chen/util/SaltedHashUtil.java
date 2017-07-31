@@ -10,6 +10,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class SaltedHashUtil {
 
+	static public final String BYTE_ENCODING = "UTF-8";
+	
 	static public final String HASH_TYPE_MD2 = "MD2";
 	static public final String HASH_TYPE_MD5 = "MD5";
 	static public final String HASH_TYPE_SHA1 = "SHA-1";
@@ -17,6 +19,8 @@ public class SaltedHashUtil {
 	static public final String HASH_TYPE_SHA384 = "SHA-384";
 	static public final String HASH_TYPE_SHA512 = "SHA-512";
 	
+	static public final String HMAC_TYPE_MD5 = "HmacMD5";
+	static public final String HMAC_TYPE_SHA1 = "HmacSHA1";
 	static public final String HMAC_TYPE_SHA256 = "HmacSHA256";
 	
 	public static String hash(String content, String salt, String... hashTypes) throws NoSuchAlgorithmException {
@@ -29,17 +33,21 @@ public class SaltedHashUtil {
 		return temp;
 	}
 	
-	public static String hmac(String content, String salt, String hmacHashType, String key) throws NoSuchAlgorithmException, InvalidKeyException {
+	public static byte[] hmac(String content, String salt, String hmacHashType, String key) throws NoSuchAlgorithmException, InvalidKeyException {
 		Mac hmac = Mac.getInstance(hmacHashType);
-		SecretKeySpec secret_key = new SecretKeySpec(key.getBytes(), hmacHashType);
-		hmac.init(secret_key);
-		return new String(hmac.doFinal((salt + content).getBytes()));
+		SecretKeySpec secret_key = null;
+		try {
+			secret_key = new SecretKeySpec(key.getBytes(BYTE_ENCODING), hmacHashType);
+			hmac.init(secret_key);
+			return hmac.doFinal((salt + content).getBytes(BYTE_ENCODING));
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	private static String hash(String hashType, String base) throws NoSuchAlgorithmException {
 		MessageDigest digest;
 		byte[] hash = null;
-		final String BYTE_ENCODING = "UTF-8";
 		
 		try {
 			digest = MessageDigest.getInstance(hashType);

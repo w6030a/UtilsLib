@@ -1,5 +1,7 @@
 package com.peter.chen.util.test;
 
+import java.util.Base64;
+
 import org.junit.Assert;
 import org.junit.Test;
 import com.peter.chen.util.SaltedHashUtil;
@@ -135,4 +137,36 @@ public class SaltedHashUtilTest {
 		Assert.assertEquals(expected, actual);
 	}
 	
+	@Test
+	public void testMD5HMAC() throws Exception {
+		String testString = "123456";
+		String salt = "i3flm234rmsldk543kf2jvl2sdfj";
+		String key = "mykey";
+		String actual = Base64.getEncoder().encodeToString(SaltedHashUtil.hmac(testString, salt, SaltedHashUtil.HMAC_TYPE_MD5, key));
+		String expected = "UfzEOEe4tvhquRIDqZHbRA==";
+		
+		Assert.assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void testSHA1HMAC() throws Exception {
+		String testString = "123456";
+		String salt = "i3flm234rmsldk543kf2jvl2sdfj";
+		String key = "mykey";
+		String actual = Base64.getEncoder().encodeToString(SaltedHashUtil.hmac(testString, salt, SaltedHashUtil.HMAC_TYPE_SHA1, key));
+		String expected = "9xqmh3YjYv/wR0pEuh+bqaPz2rs=";
+		
+		Assert.assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void testSHA256HMAC() throws Exception {
+		String testString = "123456";
+		String salt = "i3flm234rmsldk543kf2jvl2sdfj";
+		String key = "mykey";
+		String actual = Base64.getEncoder().encodeToString(SaltedHashUtil.hmac(testString, salt, SaltedHashUtil.HMAC_TYPE_SHA256, key));
+		String expected = "/zxVfO1Hy12NZuWxPCL+uQZaokPFwlrI2JZeRHUzVSY=";
+		
+		Assert.assertEquals(expected, actual);
+	}
 }
