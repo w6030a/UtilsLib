@@ -1,4 +1,4 @@
-package bytes.encode;
+package com.peter.chen.util;
 import java.util.Base64;
 
 public class Base64Util {
