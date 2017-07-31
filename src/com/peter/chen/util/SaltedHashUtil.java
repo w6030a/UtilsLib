@@ -1,8 +1,12 @@
 package com.peter.chen.util;
 
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 public class SaltedHashUtil {
 
@@ -13,6 +17,8 @@ public class SaltedHashUtil {
 	static public final String HASH_TYPE_SHA384 = "SHA-384";
 	static public final String HASH_TYPE_SHA512 = "SHA-512";
 	
+	static public final String HMAC_TYPE_SHA256 = "HmacSHA256";
+	
 	public static String hash(String content, String salt, String... hashTypes) throws NoSuchAlgorithmException {
 		String temp = salt + content;
 		
@@ -21,6 +27,13 @@ public class SaltedHashUtil {
 		}
 		
 		return temp;
+	}
+	
+	public static String hmac(String content, String salt, String hmacHashType, String key) throws NoSuchAlgorithmException, InvalidKeyException {
+		Mac hmac = Mac.getInstance(hmacHashType);
+		SecretKeySpec secret_key = new SecretKeySpec(key.getBytes(), hmacHashType);
+		hmac.init(secret_key);
+		return new String(hmac.doFinal((salt + content).getBytes()));
 	}
 	
 	private static String hash(String hashType, String base) throws NoSuchAlgorithmException {
